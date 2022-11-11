@@ -4,76 +4,113 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:background="@color/purple_500"
+    tools:context=".view.MainActivity">
 
-    <LinearLayout
-        android:id="@+id/ll"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="By Aman Bhatt"
+        android:textColor="@color/black"
+        android:textSize="15dp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.945"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView"
+        app:layout_constraintVertical_bias="0.885" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="10dp"
-        android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:backgroundTint="@color/purple_200"
+        app:cardCornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
+        <LinearLayout
+            android:id="@+id/ll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_margin="10dp"
-            android:text="Phone Information"
-            android:textColor="@color/black"
-            android:textSize="30sp" />
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/imeiNumber"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Device ID"
-            android:padding="10dp"
-            android:textSize="25dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:text="Phone Information"
+                android:textColor="@color/black"
+                android:textSize="30sp" />
 
-        <TextView
-            android:id="@+id/internetStatus"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Internet Status"
-            android:padding="10dp"
-            android:textSize="25dp" />
+            <TextView
+                android:id="@+id/deviceID"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Device ID"
+                android:padding="10dp"
+                android:textSize="25dp" />
 
-        <TextView
-            android:id="@+id/batteryStatus"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Battery Status"
-            android:padding="10dp"
-            android:textSize="25dp" />
+            <TextView
+                android:id="@+id/internetStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Internet Status"
+                android:padding="10dp"
+                android:textSize="25dp" />
 
-        <TextView
-            android:id="@+id/batteryPercentage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Battery %"
-            android:padding="10dp"
-            android:textSize="25dp" />
+            <TextView
+                android:id="@+id/batteryStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Battery Status"
+                android:padding="10dp"
+                android:textSize="25dp" />
 
-        <TextView
-            android:id="@+id/location"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Location"
-            android:padding="10dp"
-            android:textSize="25dp" />
+            <TextView
+                android:id="@+id/batteryPercentage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Battery %"
+                android:padding="10dp"
+                android:textSize="25dp" />
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:shadowRadius="7"
-            android:text="Get your device Info!!" />
+            <TextView
+                android:id="@+id/location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Location"
+                android:padding="10dp"
+                android:textSize="25dp" />
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:shadowRadius="7"
+                android:text="Get your device Info!!" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <ProgressBar
+        android:id="@+id/pb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

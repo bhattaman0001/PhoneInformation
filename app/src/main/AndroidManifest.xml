@@ -22,7 +22,7 @@
         android:theme="@style/Theme.PhoneInfo"
         tools:targetApi="31">
         <receiver
-            android:name=".MainActivity"
+            android:name=".view.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
@@ -33,7 +33,7 @@
         </receiver>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".view.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

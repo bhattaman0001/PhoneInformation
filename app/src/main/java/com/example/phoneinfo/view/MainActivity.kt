@@ -1,4 +1,4 @@
-package com.example.phoneinfo
+package com.example.phoneinfo.view
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -13,13 +13,20 @@ import android.os.BatteryManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.view.View
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.example.phoneinfo.api.RetrofitClient
 import com.example.phoneinfo.databinding.ActivityMainBinding
+import com.example.phoneinfo.model.Model
+import com.example.phoneinfo.model.RequestResponseModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Task
+import retrofit2.Call
+import retrofit2.Response
 import java.util.*
 
 
@@ -39,7 +46,65 @@ class MainActivity : AppCompatActivity() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         Handler().postDelayed({
             getDeviceINFO()
-        }, 2000)
+        }, 5000)
+
+        binding.button.setOnClickListener {
+            getDeviceINFO()
+        }
+
+        uploadData()
+    }
+
+    private fun uploadData() {
+        binding.pb.visibility = View.VISIBLE
+
+        try {
+            val model = Model(
+                binding.deviceID.text.toString(),
+                binding.internetStatus.text.toString(),
+                binding.batteryStatus.text.toString(),
+                binding.batteryPercentage.text.toString(),
+                binding.location.text.toString()
+            )
+
+            val retrofit = RetrofitClient()
+            retrofit.buildService().sendData(model)
+                .enqueue(object : retrofit2.Callback<RequestResponseModel> {
+                    override fun onResponse(
+                        call: Call<RequestResponseModel>,
+                        response: Response<RequestResponseModel>
+                    ) {
+
+                        // progress bar invisible
+                        binding.pb.visibility = View.INVISIBLE
+
+                        val myResponse = response.body()
+                        Toast.makeText(
+                            this@MainActivity,
+                            myResponse?.msg.toString(),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        Handler().postDelayed({
+                            Toast.makeText(
+                                this@MainActivity,
+                                "Uploaded Data",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }, 3000)
+                    }
+
+                    override fun onFailure(call: Call<RequestResponseModel>, t: Throwable) {
+                        Toast.makeText(
+                            this@MainActivity,
+                            t.message.toString(),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                })
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
     }
 
     @SuppressLint("SetTextI18n")
@@ -106,9 +171,8 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("HardwareIds")
     private fun getDeviceIMEI() {
-        binding.imeiNumber.text = UUID.randomUUID().toString()
+        binding.deviceID.text = UUID.randomUUID().toString()
     }
-
 
     @SuppressLint("SetTextI18n")
     private fun fetchLocation() {
@@ -131,7 +195,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onStop() {
