@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATED_IDENTITY_EQUALS")
+
 package com.example.phoneinfo.view
 
 import android.Manifest
@@ -6,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.location.Location
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -13,9 +16,11 @@ import android.os.BatteryManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.provider.Settings.Secure
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.phoneinfo.api.RetrofitClient
@@ -32,27 +37,61 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     private lateinit var binding: ActivityMainBinding
+    val handler = Handler()
+    val delay = 300000L
 
-    @RequiresApi(Build.VERSION_CODES.M)
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-        Handler().postDelayed({
-            getDeviceINFO()
-        }, 5000)
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.INTERNET
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            alertDialog()
+            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
-        binding.button.setOnClickListener {
-            getDeviceINFO()
+            handler.postDelayed(object : Runnable {
+                override fun run() {
+                    getDeviceINFO()
+                    handler.postDelayed(this, delay)
+                }
+            }, delay)
+
+            binding.button.setOnClickListener {
+                getDeviceINFO()
+                uploadData()
+            }
+        } else if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.INTERNET
+            ) == PackageManager.PERMISSION_DENIED
+        ) {
+            Toast.makeText(
+                this@MainActivity,
+                "Connect through internet first!",
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
-        uploadData()
+    }
+
+    private fun alertDialog() {
+        val builder = AlertDialog.Builder(this@MainActivity)
+        builder.setTitle("Listen!")
+        builder.setMessage(
+            "The Device information will be \nchanged after every 5 minutes\n" +
+                    "and in between if you want to see the \ninformation then click on provided button"
+        )
+        builder.setCancelable(true)
+        builder.create().show()
     }
 
     private fun uploadData() {
@@ -78,16 +117,16 @@ class MainActivity : AppCompatActivity() {
                         // progress bar invisible
                         binding.pb.visibility = View.INVISIBLE
 
-                        val myResponse = response.body()
                         Toast.makeText(
                             this@MainActivity,
-                            myResponse?.msg.toString(),
+                            response.message(),
                             Toast.LENGTH_SHORT
                         ).show()
+//                        Log.d("msg", response.message())
                         Handler().postDelayed({
                             Toast.makeText(
                                 this@MainActivity,
-                                "Uploaded Data",
+                                "Your data has been uploaded!",
                                 Toast.LENGTH_LONG
                             ).show()
                         }, 3000)
@@ -99,6 +138,8 @@ class MainActivity : AppCompatActivity() {
                             t.message.toString(),
                             Toast.LENGTH_SHORT
                         ).show()
+
+//                        Log.d("msg", t.message.toString())
                     }
                 })
         } catch (e: Exception) {
@@ -107,8 +148,8 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetTextI18n")
-    @RequiresApi(Build.VERSION_CODES.M)
     private fun getDeviceINFO() {
         fetchLocation()
         getDeviceIMEI()
@@ -169,9 +210,43 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("HardwareIds")
     private fun getDeviceIMEI() {
-        binding.deviceID.text = UUID.randomUUID().toString()
+//        val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+//        if (ActivityCompat.checkSelfPermission(
+//                this@MainActivity,
+//                Manifest.permission.READ_PHONE_STATE
+//            ) != PackageManager.PERMISSION_GRANTED
+//        ) {
+//            ActivityCompat.requestPermissions(
+//                this@MainActivity,
+//                arrayOf(Manifest.permission.READ_PHONE_STATE), 101
+//            )
+//            return
+//        }
+//        binding.deviceID.text = telephonyManager.imei.toString()
+
+        binding.deviceID.text =
+            Secure.getString(this@MainActivity.contentResolver, Secure.ANDROID_ID).toString()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String?>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            101 -> {
+                if (grantResults.isNotEmpty() && grantResults[0] ==
+                    PackageManager.PERMISSION_GRANTED
+                ) {
+                    Toast.makeText(this, "Permission granted.", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Permission denied.", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -191,18 +266,35 @@ class MainActivity : AppCompatActivity() {
         }
         task.addOnSuccessListener {
             if (it != null) {
-                binding.location.text = "Latitude = ${it.latitude} Longitude = ${it.longitude}"
+                binding.location.text = "Location = ${it.latitude}, ${it.longitude}"
             }
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        if (newConfig.orientation === Configuration.ORIENTATION_LANDSCAPE) {
+            Toast.makeText(
+                this@MainActivity,
+                "Landscape Mode ON",
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            Toast.makeText(
+                this@MainActivity,
+                "Portrait Mode ON",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onStop() {
         super.onStop()
         getDeviceINFO()
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onPause() {
         super.onPause()
         getDeviceINFO()

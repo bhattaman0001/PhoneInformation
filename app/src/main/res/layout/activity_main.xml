@@ -33,75 +33,80 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:id="@+id/ll"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
+            <LinearLayout
+                android:id="@+id/ll"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_margin="10dp"
-                android:text="Phone Information"
-                android:textColor="@color/black"
-                android:textSize="30sp" />
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/deviceID"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Device ID"
-                android:padding="10dp"
-                android:textSize="25dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:text="Phone Information"
+                    android:textColor="@color/black"
+                    android:textSize="30sp" />
 
-            <TextView
-                android:id="@+id/internetStatus"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Internet Status"
-                android:padding="10dp"
-                android:textSize="25dp" />
+                <TextView
+                    android:id="@+id/deviceID"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Device ID"
+                    android:padding="10dp"
+                    android:textSize="25dp" />
 
-            <TextView
-                android:id="@+id/batteryStatus"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Battery Status"
-                android:padding="10dp"
-                android:textSize="25dp" />
+                <TextView
+                    android:id="@+id/internetStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Internet Status"
+                    android:padding="10dp"
+                    android:textSize="25dp" />
 
-            <TextView
-                android:id="@+id/batteryPercentage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Battery %"
-                android:padding="10dp"
-                android:textSize="25dp" />
+                <TextView
+                    android:id="@+id/batteryStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Battery Status"
+                    android:padding="10dp"
+                    android:textSize="25dp" />
 
-            <TextView
-                android:id="@+id/location"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Location"
-                android:padding="10dp"
-                android:textSize="25dp" />
+                <TextView
+                    android:id="@+id/batteryPercentage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Battery %"
+                    android:padding="10dp"
+                    android:textSize="25dp" />
 
-            <Button
-                android:id="@+id/button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:shadowRadius="7"
-                android:text="Get your device Info!!" />
+                <TextView
+                    android:id="@+id/location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Location"
+                    android:padding="10dp"
+                    android:textSize="25dp" />
 
-        </LinearLayout>
+                <Button
+                    android:id="@+id/button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:shadowRadius="7"
+                    android:text="Get your device Info!!" />
+
+            </LinearLayout>
+        </ScrollView>
     </androidx.cardview.widget.CardView>
 
     <ProgressBar
