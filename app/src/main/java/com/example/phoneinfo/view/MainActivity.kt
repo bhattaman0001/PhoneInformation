@@ -74,11 +74,16 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.INTERNET
             ) == PackageManager.PERMISSION_DENIED
         ) {
+            ActivityCompat.requestPermissions(
+                this, arrayOf(Manifest.permission.INTERNET), 101
+            )
             Toast.makeText(
                 this@MainActivity,
                 "Connect through internet first!",
                 Toast.LENGTH_SHORT
             ).show()
+            return
+
         }
 
     }
@@ -133,12 +138,13 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     override fun onFailure(call: Call<RequestResponseModel>, t: Throwable) {
-                        Toast.makeText(
-                            this@MainActivity,
-                            t.message.toString(),
-                            Toast.LENGTH_SHORT
-                        ).show()
-
+                        if (t.message.toString() == "Failed to connect to /143.244.138.96:2110") {
+                            Toast.makeText(
+                                this@MainActivity,
+                                "First Connect to Internet!!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
 //                        Log.d("msg", t.message.toString())
                     }
                 })
