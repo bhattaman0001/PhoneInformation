@@ -32,6 +32,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Task
 import retrofit2.Call
 import retrofit2.Response
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -41,7 +42,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     val handler = Handler()
-    val delay = 300000L
+    val delay = 900000L
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetTextI18n")
@@ -86,13 +87,21 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+        openCaptureImage()
+
+    }
+
+    private fun openCaptureImage() {
+        binding.captureImage.setOnClickListener {
+            startActivity(Intent(this, ImageCapture::class.java))
+        }
     }
 
     private fun alertDialog() {
         val builder = AlertDialog.Builder(this@MainActivity)
         builder.setTitle("Listen!")
         builder.setMessage(
-            "The Device information will be \nchanged after every 5 minutes\n" +
+            "The Device information will be \nchanged after every 15 minutes\n" +
                     "and in between if you want to see the \ninformation then click on provided button"
         )
         builder.setCancelable(true)
@@ -122,19 +131,19 @@ class MainActivity : AppCompatActivity() {
                         // progress bar invisible
                         binding.pb.visibility = View.INVISIBLE
 
-                        Toast.makeText(
-                            this@MainActivity,
-                            response.message(),
-                            Toast.LENGTH_SHORT
-                        ).show()
+//                        Toast.makeText(
+//                            this@MainActivity,
+//                            response.message(),
+//                            Toast.LENGTH_SHORT
+//                        ).show()
 //                        Log.d("msg", response.message())
-                        Handler().postDelayed({
-                            Toast.makeText(
-                                this@MainActivity,
-                                "Your data has been uploaded!",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }, 3000)
+//                        Handler().postDelayed({
+//                            Toast.makeText(
+//                                this@MainActivity,
+//                                "Your data has been uploaded!",
+//                                Toast.LENGTH_LONG
+//                            ).show()
+//                        }, 3000)
                     }
 
                     override fun onFailure(call: Call<RequestResponseModel>, t: Throwable) {
@@ -160,6 +169,7 @@ class MainActivity : AppCompatActivity() {
         fetchLocation()
         getDeviceIMEI()
         getBatteryStatus()
+        getTimeStamp()
         if (checkForInternet(this)) {
             binding.internetStatus.text = "Device is connected through Internet"
         } else {
@@ -253,6 +263,13 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private fun getTimeStamp() {
+        binding.timeStamp.text = SimpleDateFormat("HH:mm:ss").format(Calendar
+            .getInstance().time
+        );
     }
 
     @SuppressLint("SetTextI18n")
